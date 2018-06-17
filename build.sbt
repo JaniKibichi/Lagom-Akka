@@ -48,3 +48,5 @@ lazy val `lagomscala-stream-impl` = (project in file("lagomscala-stream-impl"))
     )
   )
   .dependsOn(`lagomscala-stream-api`, `lagomscala-api`)
+
+lagomUnmanagedServices in ThisBuild := Map("login" -> "http://127.0.0.1:8888")

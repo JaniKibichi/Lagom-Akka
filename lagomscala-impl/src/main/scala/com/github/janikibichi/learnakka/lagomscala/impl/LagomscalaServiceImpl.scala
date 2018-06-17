@@ -3,17 +3,28 @@ package com.github.janikibichi.learnakka.lagomscala.impl
 import akka.Done
 import com.github.janikibichi.learnakka.lagomscala.api
 import com.github.janikibichi.learnakka.lagomscala.api.LagomscalaService
-import com.lightbend.lagom.scaladsl.api.ServiceCall
+import com.lightbend.lagom.scaladsl.api.{ServiceCall, ServiceLocator}
 import com.lightbend.lagom.scaladsl.api.broker.Topic
 import com.lightbend.lagom.scaladsl.broker.TopicProducer
 import com.lightbend.lagom.scaladsl.persistence.{EventStreamElement, PersistentEntityRegistry}
-import scala.concurrent.Future
+
+import scala.concurrent.{Await, Future}
+import scala.concurrent.duration._
 
 /**
   * Implementation of the LagomscalaService.
   */
-class LagomscalaServiceImpl(persistentEntityRegistry: PersistentEntityRegistry) extends LagomscalaService {
-  override def healthCheck() = ServiceCall (_ => Future.successful(Done))
+class LagomscalaServiceImpl(persistentEntityRegistry: PersistentEntityRegistry, serviceLocator: ServiceLocator) extends LagomscalaService {
+  override def healthCheck() = ServiceCall {_ =>
+    Await.result(serviceLocator.locate("login"), 2 seconds)match{
+      case Some(serviceUri) =>
+        println(s"Service found at:[$serviceUri]")
+
+      case None =>
+        println("Service not found")
+    }
+    Future.successful(Done)
+  }
 
   override def hello(id: String) = ServiceCall { _ =>
     // Look up the lagomscala entity for the given ID.
