@@ -1,8 +1,7 @@
 package com.github.janikibichi.learnakka.lagomscala.api
 
 import akka.{Done, NotUsed}
-import com.lightbend.lagom.scaladsl.api.broker.Topic
-import com.lightbend.lagom.scaladsl.api.broker.kafka.{KafkaProperties, PartitionKeyStrategy}
+import com.lightbend.lagom.scaladsl.api.transport.Method
 import com.lightbend.lagom.scaladsl.api.{Service, ServiceCall}
 import play.api.libs.json.{Format, Json}
 
@@ -10,55 +9,21 @@ object LagomscalaService  {
   val TOPIC_NAME = "greetings"
 }
 
-/**
-  * The lagomscala service interface.
-  * <p>
-  * This describes everything that Lagom needs to know about how to serve and
-  * consume the LagomscalaService.
-  */
-trait LagomscalaService extends Service {
+trait LagomscalaService extends Service{
+  def toUppercase: ServiceCall[String,String]
+  def toLowercase: ServiceCall[String,String]
+  def isEmpty(str: String): ServiceCall[NotUsed,Boolean]
+  def areEqual(str1:String, str2:String): ServiceCall[NotUsed,Boolean]
 
-  /**
-    * Example: curl http://localhost:9000/api/hello/Alice
-    */
-  def hello(id: String): ServiceCall[NotUsed, String]
-
-  /**
-    * Example: curl -H "Content-Type: application/json" -X POST -d '{"message":
-    * "Hi"}' http://localhost:9000/api/hello/Alice
-    */
-  def useGreeting(id: String): ServiceCall[GreetingMessage, Done]
-
-  def healthCheck() : ServiceCall[NotUsed, Done]
-
-  /**
-    * This gets published to Kafka.
-    */
-  def greetingsTopic(): Topic[GreetingMessageChanged]
-
-  override final def descriptor = {
+  override final def descriptor ={
     import Service._
-    // @formatter:off
-    named("lagomscala")
-      .withCalls(
-        pathCall("/api/hello/:id", hello _),
-        pathCall("/api/hello/:id", useGreeting _),
-        pathCall("/api/healthcheck", healthCheck)
-      )
-      .withTopics(
-        topic(LagomscalaService.TOPIC_NAME, greetingsTopic)
-          // Kafka partitions messages, messages within the same partition will
-          // be delivered in order, to ensure that all messages for the same user
-          // go to the same partition (and hence are delivered in order with respect
-          // to that user), we configure a partition key strategy that extracts the
-          // name as the partition key.
-          .addProperty(
-            KafkaProperties.partitionKeyStrategy,
-            PartitionKeyStrategy[GreetingMessageChanged](_.name)
-          )
-      )
-      .withAutoAcl(true)
-    // @formatter:on
+
+    named("stringutils").withCalls(
+      call(toUppercase),
+      namedCall("toLowercase",toLowercase),
+      pathCall("/isEmpty/:str", isEmpty _),
+      restCall(Method.GET, "/areEqual/:one/another/:other", areEqual _)
+    ).withAutoAcl(true)
   }
 }
 

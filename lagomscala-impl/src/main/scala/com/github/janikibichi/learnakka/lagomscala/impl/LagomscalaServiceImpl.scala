@@ -1,58 +1,20 @@
 package com.github.janikibichi.learnakka.lagomscala.impl
 
-import akka.Done
-import com.github.janikibichi.learnakka.lagomscala.api
 import com.github.janikibichi.learnakka.lagomscala.api.LagomscalaService
 import com.lightbend.lagom.scaladsl.api.{ServiceCall, ServiceLocator}
-import com.lightbend.lagom.scaladsl.api.broker.Topic
-import com.lightbend.lagom.scaladsl.broker.TopicProducer
-import com.lightbend.lagom.scaladsl.persistence.{EventStreamElement, PersistentEntityRegistry}
-
 import scala.concurrent.{Await, Future}
-import scala.concurrent.duration._
 
-/**
-  * Implementation of the LagomscalaService.
-  */
-class LagomscalaServiceImpl(persistentEntityRegistry: PersistentEntityRegistry, serviceLocator: ServiceLocator) extends LagomscalaService {
-  override def healthCheck() = ServiceCall {_ =>
-    Await.result(serviceLocator.locate("login"), 2 seconds)match{
-      case Some(serviceUri) =>
-        println(s"Service found at:[$serviceUri]")
-
-      case None =>
-        println("Service not found")
-    }
-    Future.successful(Done)
+class LagomscalaServiceImpl extends LagomscalaService {
+  override def toUppercase = ServiceCall{
+    x =>  Future.successful(x.toUpperCase)
   }
-
-  override def hello(id: String) = ServiceCall { _ =>
-    // Look up the lagomscala entity for the given ID.
-    val ref = persistentEntityRegistry.refFor[LagomscalaEntity](id)
-
-    // Ask the entity the Hello command.
-    ref.ask(Hello(id))
+  override def toLowercase = ServiceCall{
+    x =>  Future.successful(x.toLowerCase)
   }
-
-  override def useGreeting(id: String) = ServiceCall { request =>
-    // Look up the lagomscala entity for the given ID.
-    val ref = persistentEntityRegistry.refFor[LagomscalaEntity](id)
-
-    // Tell the entity to use the greeting message specified.
-    ref.ask(UseGreetingMessage(request.message))
+  override def isEmpty(str:String) = ServiceCall{
+    _ =>  Future.successful(str.isEmpty)
   }
-
-
-  override def greetingsTopic(): Topic[api.GreetingMessageChanged] =
-    TopicProducer.singleStreamWithOffset {
-      fromOffset =>
-        persistentEntityRegistry.eventStream(LagomscalaEvent.Tag, fromOffset)
-          .map(ev => (convertEvent(ev), ev.offset))
-    }
-
-  private def convertEvent(helloEvent: EventStreamElement[LagomscalaEvent]): api.GreetingMessageChanged = {
-    helloEvent.event match {
-      case GreetingMessageChanged(msg) => api.GreetingMessageChanged(helloEvent.entityId, msg)
-    }
+  override def areEqual(str1:String, str2:String) = ServiceCall{
+    _ =>  Future.successful(str1 == str2)
   }
 }
