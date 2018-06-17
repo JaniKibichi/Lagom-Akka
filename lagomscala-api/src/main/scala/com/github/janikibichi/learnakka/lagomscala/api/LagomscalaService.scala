@@ -29,6 +29,7 @@ trait LagomscalaService extends Service {
     */
   def useGreeting(id: String): ServiceCall[GreetingMessage, Done]
 
+  def healthCheck() : ServiceCall[NotUsed, Done]
 
   /**
     * This gets published to Kafka.
@@ -41,7 +42,8 @@ trait LagomscalaService extends Service {
     named("lagomscala")
       .withCalls(
         pathCall("/api/hello/:id", hello _),
-        pathCall("/api/hello/:id", useGreeting _)
+        pathCall("/api/hello/:id", useGreeting _),
+        pathCall("/api/healthcheck", healthCheck)
       )
       .withTopics(
         topic(LagomscalaService.TOPIC_NAME, greetingsTopic)
