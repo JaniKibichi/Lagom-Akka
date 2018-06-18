@@ -169,7 +169,40 @@ curl -d '{"clientId":"123456", "clientSecret":"in9ne0dfka"}' http://127.0.0.1:90
 
 curl -d '{"clientId":"123456", "token":"ee34ee95-f908-4b03-b6e5-8e0b46b2f4bf","message":""}' http://127.0.0.1:9000/api/consume
 ````
+<br><br>
+- Branch out to explore Testing services
+````
+git checkout -b testing_services consuming_services
+````
+- Create the test directory in the token-impl module, and the file TokenServiceSpec.scala:
+````
+mkdir -p src/test/scala
+touch src/test/scala/TokenServiceSpec.scala
+````
+- Add test for token retrieval inside 'The token service should:' block
+````
+"return a token if clientId and clientSecret are correct" in{
+ val retrieveTokenRequest = RetrieveTokenRequest("123456","in9ne0dfka")
+ serviceClient.retrieveToken.invoke(retrieveTokenRequest).map{
+  response =>
+   response.successful shouldBe true
+   response.token should not be 'empty'
+ }
+}
+````
+- Add a test for token validator inside 'The token service should:'
+````
+"validate a valid token" in{
+ val retrieveTokenRequest = RetrieveTokenRequest("123456","in9ne0dfka")
+ serviceClient.retrieveToken.invoke(retrieveTokenRequest).flatMap{ retrieveResponse => 
+   val validateTokenRequest = ValidateTokenRequest("123456",retrieveReponse.token.get)
 
+    serviceClient.validateToken.invoke(validateTokenRequest).map{ 
+     validateResponse => validateResponse shouldBe ValidateTokenResult(true)
+    }
+ }
+}
+````
 
 
 
