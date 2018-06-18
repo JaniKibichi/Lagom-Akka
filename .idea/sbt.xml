@@ -8,6 +8,10 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/consumer-api" />
+            <option value="$PROJECT_DIR$/consumer-api/project" />
+            <option value="$PROJECT_DIR$/consumer-impl" />
+            <option value="$PROJECT_DIR$/consumer-impl/project" />
             <option value="$PROJECT_DIR$/lagomscala-api" />
             <option value="$PROJECT_DIR$/lagomscala-api/project" />
             <option value="$PROJECT_DIR$/lagomscala-impl" />

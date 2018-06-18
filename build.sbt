@@ -8,7 +8,8 @@ val macwire = "com.softwaremill.macwire" %% "macros" % "2.3.0" % "provided"
 val scalaTest = "org.scalatest" %% "scalatest" % "3.0.4" % Test
 
 lazy val `lagomscala` = (project in file("."))
-  .aggregate(`lagomscala-api`, `lagomscala-impl`, `lagomscala-stream-api`, `lagomscala-stream-impl`,`token-api`,`token-impl`)
+  .aggregate(`lagomscala-api`, `lagomscala-impl`,`lagomscala-stream-api`, `lagomscala-stream-impl`,
+    `token-api`,`token-impl`,`consumer-api`,`consumer-impl`)
 
 
 lazy val `lagomscala-api` = (project in file("lagomscala-api"))
@@ -74,3 +75,23 @@ lazy val `token-impl` = (project in file("token-impl"))
   )
   .settings(lagomForkedTestSettings: _*)
   .dependsOn(`token-api`)
+
+lazy val `consumer-api` =(project in file("consumer-api"))
+  .settings(
+    libraryDependencies ++= Seq(
+      lagomScaladslApi
+    )
+  )
+
+lazy val `consumer-impl`=(project in file("consumer-impl"))
+  .enablePlugins(LagomScala)
+  .settings(
+    libraryDependencies ++= Seq(
+      lagomScaladslPersistenceCassandra,
+      lagomScaladslTestKit,
+      macwire,
+      scalaTest
+    )
+  )
+  .settings(lagomForkedTestSettings: _*)
+  .dependsOn(`consumer-api`,`token-api`)

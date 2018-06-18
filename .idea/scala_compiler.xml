@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ScalaCompilerConfiguration">
-    <profile name="sbt 1" modules="lagomscala_5887,lagomscala,lagomscala-stream-impl,token-api,lagomscala-stream-api,lagomscala-api,token-impl,lagomscala-impl" />
+    <profile name="sbt 1" modules="lagomscala_5887,lagomscala,lagomscala-api,lagomscala-stream-api,consumer-impl,lagomscala-stream-impl,token-api,token-impl,lagomscala-impl,consumer-api" />
   </component>
 </project>

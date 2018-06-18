@@ -2,6 +2,7 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel>
+      <module name="consumer-impl" target="1.8" />
       <module name="lagomscala-impl" target="1.8" />
       <module name="lagomscala-stream-impl" target="1.8" />
       <module name="token-impl" target="1.8" />

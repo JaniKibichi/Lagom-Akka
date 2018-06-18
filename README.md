@@ -102,8 +102,73 @@ mkdir -p src/main/scala/com/github/janikibichi/learnakka/token/impl
 mkdir -p src/main/resources
 touch src/main/resources/application.conf
 ````
+<br><br>
+- Branch out to explore consuming services:
+````
+git checkout -b consuming_services implement_lagom_services
+````
+- Define two new modules in the build.sbt file
+````
+lazy val `consumer-api` =(project in file("consumer-api"))
+.settings(
+ libraryDependencies ++= Seq(
+  lagomScaladslApi
+ )
+)
 
+lazy val `consumer-impl`=(project in file("consumer-impl"))
+.enablePlugins(LagomScala)
+.settings(
+ libraryDependencies ++= Seq(
+  lagomScaladslPersistenceCassandra,
+  lagomScaladslTestKit,
+  macwire,
+  scalaTest
+ )
+)
+.settings(lagomForkedTestSettings: _*)
+.dependsOn(`consumer-api`,`token-api`)
 
+````
+- Run sbt compile:
+````
+sbt compile
+````
+- Create a package in the consumer-api module
+````
+mkdir -p src/main/scala/com/github/janikibichi/learnakka/consumer/api
+````
+- Create the file:<b>com.github.janikibichi.learnakka.consumer.api.Messages.scala</b>
+- Create file to define service:<b>com.github.janikibichi.learnakka.consumer.api.ConsumeService.scala</b>
+- Create a package in the consumer-impl module
+````
+mkdir -p src/main/scala/com/github/janikibichi/learnakka/consumer/impl
+````
+- Create file: <b>com.github.janikibichi.learnakka.consumer.api.ConsumerServiceImpl.scala</b>
+- Create the service loader:<b>com.github.janikibichi.learnakka.consumer.api.ConsumerLoader.scala</b>
+- Let Lagom know where our service loader is in consumer-impl:
+````
+mkdir -p src/main/resources
+touch src/main/resources/application.conf
+````
+- Update the file:
+````
+play.application.loader = com.github.janikibichi.learnakka.consumer.impl.ConsumerLoader
+````
+- Run the Application:
+````
+sbt runAll
+````
+- Test end points with CURL:
+````
+curl -d '{"clientId":"some-invalid-clientId","token":"some-invalid-token", "message":""}' http://127.0.0.1:9000/api/consume
+
+curl -d '{"clientId":"123456", "clientSecret":"something-wrong"} http://127.0.0.1:9000/token/retrieve
+
+curl -d '{"clientId":"123456", "clientSecret":"in9ne0dfka"}' http://127.0.0.1:9000/token/retrieve
+
+curl -d '{"clientId":"123456", "token":"ee34ee95-f908-4b03-b6e5-8e0b46b2f4bf","message":""}' http://127.0.0.1:9000/api/consume
+````
 
 
 
