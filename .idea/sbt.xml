@@ -17,6 +17,10 @@
             <option value="$PROJECT_DIR$/lagomscala-stream-impl" />
             <option value="$PROJECT_DIR$/lagomscala-stream-impl/project" />
             <option value="$PROJECT_DIR$/project" />
+            <option value="$PROJECT_DIR$/token-api" />
+            <option value="$PROJECT_DIR$/token-api/project" />
+            <option value="$PROJECT_DIR$/token-impl" />
+            <option value="$PROJECT_DIR$/token-impl/project" />
           </set>
         </option>
         <option name="sbtVersion" value="1.1.5" />

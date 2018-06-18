@@ -12,6 +12,10 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/lagomscala-stream-api-build.iml" filepath="$PROJECT_DIR$/.idea/modules/lagomscala-stream-api-build.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/lagomscala-stream-impl.iml" filepath="$PROJECT_DIR$/.idea/modules/lagomscala-stream-impl.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/lagomscala-stream-impl-build.iml" filepath="$PROJECT_DIR$/.idea/modules/lagomscala-stream-impl-build.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/token-api.iml" filepath="$PROJECT_DIR$/.idea/modules/token-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/token-api-build.iml" filepath="$PROJECT_DIR$/.idea/modules/token-api-build.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/token-impl.iml" filepath="$PROJECT_DIR$/.idea/modules/token-impl.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/token-impl-build.iml" filepath="$PROJECT_DIR$/.idea/modules/token-impl-build.iml" />
     </modules>
   </component>
 </project>

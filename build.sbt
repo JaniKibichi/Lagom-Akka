@@ -8,7 +8,8 @@ val macwire = "com.softwaremill.macwire" %% "macros" % "2.3.0" % "provided"
 val scalaTest = "org.scalatest" %% "scalatest" % "3.0.4" % Test
 
 lazy val `lagomscala` = (project in file("."))
-  .aggregate(`lagomscala-api`, `lagomscala-impl`, `lagomscala-stream-api`, `lagomscala-stream-impl`)
+  .aggregate(`lagomscala-api`, `lagomscala-impl`, `lagomscala-stream-api`, `lagomscala-stream-impl`,`token-api`,`token-impl`)
+
 
 lazy val `lagomscala-api` = (project in file("lagomscala-api"))
   .settings(
@@ -31,6 +32,7 @@ lazy val `lagomscala-impl` = (project in file("lagomscala-impl"))
   .settings(lagomForkedTestSettings: _*)
   .dependsOn(`lagomscala-api`)
 
+
 lazy val `lagomscala-stream-api` = (project in file("lagomscala-stream-api"))
   .settings(
     libraryDependencies ++= Seq(
@@ -49,4 +51,26 @@ lazy val `lagomscala-stream-impl` = (project in file("lagomscala-stream-impl"))
   )
   .dependsOn(`lagomscala-stream-api`, `lagomscala-api`)
 
+
 lagomUnmanagedServices in ThisBuild := Map("login" -> "http://127.0.0.1:8888")
+
+
+lazy val `token-api` = (project in file("token-api"))
+  .settings(
+    libraryDependencies ++= Seq(
+      lagomScaladslApi
+    )
+  )
+
+lazy val `token-impl` = (project in file("token-impl"))
+  .enablePlugins(LagomScala)
+  .settings(
+    libraryDependencies ++= Seq(
+      lagomScaladslPersistenceCassandra,
+      lagomScaladslTestKit,
+      macwire,
+      scalaTest
+    )
+  )
+  .settings(lagomForkedTestSettings: _*)
+  .dependsOn(`token-api`)

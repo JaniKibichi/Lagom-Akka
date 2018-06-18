@@ -4,6 +4,7 @@
     <bytecodeTargetLevel>
       <module name="lagomscala-impl" target="1.8" />
       <module name="lagomscala-stream-impl" target="1.8" />
+      <module name="token-impl" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
