@@ -10,7 +10,7 @@ import scala.concurrent.Future
   * Implementation of the LagomscalaStreamService.
   */
 class LagomscalaStreamServiceImpl(lagomscalaService: LagomscalaService) extends LagomscalaStreamService {
-  def stream = ServiceCall { hellos =>
-    Future.successful(hellos.mapAsync(8)(lagomscalaService.hello(_).invoke()))
+  def stream = ServiceCall { hellos => ???
+    //Future.successful(hellos.mapAsync(8)(lagomscalaService.hello(_).invoke()))
   }
 }
