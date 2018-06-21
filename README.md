@@ -203,10 +203,96 @@ touch src/test/scala/TokenServiceSpec.scala
  }
 }
 ````
+<br><br>
+- Branch out to explore persistent and clustered services
+````
+git checkout -b persistent_clustered_services testing_services
+````
+- Create two new modules in the build.sbt
+````
+lazy val `trip-api` = (project in file("trip-api"))
+.settings(
+ libraryDependencies ++ = Seq(
+  lagomScaladslApi
+ )
+)
 
+lazy val `trip-impl` = (project in file("trip-impl"))
+.enablePlugins(LagomScala)
+.settings(
+ libraryDependencies ++ Seq(
+  lagomScaladslPersistenceCassandra,
+  lagomScaladslTestKit,
+  macwire,
+  scalaTest
+ )
+)
+.settings(lagomForkedTestSettings: _*)
+.dependsOn(`trip-api`)
 
+````
+- Add the modules to the aggregate of the project:
+````
+lazy val `lagomscala` = (project in file("."))
+  .aggregate(
+`lagomscala-api`, `lagomscala-impl`,
+`lagomscala-stream-api`, `lagomscala-stream-impl`,
+`token-api`,`token-impl`,`consumer-api`,
+`consumer-impl`, `trip-api`,`trip-impl`
+)
+````
+- Run sbt compile
+````
+sbt compile
+````
+- In the trip-api module, create the package:
+````
+mkdir -p src/main/scala/com/github/janikibichi/learnakka/trip/api
+````
+- Create file:<b>com.github.janikibichi.learnakka.trip.api.Messages.scala</b>
+- Create file:<b>com.github.janikibichi.learnakka.trip.api.TripService.scala</b>
+- In the trip-impl module, create the package:
+````
+mkdir -p src/main/scala/com/github/janikibichi/learnakka/trip/impl
+````
+- Create file:<b>com.github.janikibichi.learnakka.trip.impl.CommandEventState.scala</b>
+- Create file to serialize data to/from data store: <b>com.github.janikibichi.learnakka.trip.impl.ClientSerializerRegistry.scala</b>
+- Create file:<b>com.github.janikibichi.learnakka.trip.impl.ClientEntity.scala</b>
+- Create file:<b>com.github.janikibichi.learnakka.trip.impl.TripServiceImpl.scala</b>
+- Create the service loader:<b>com.github.janikibichi.learnakka.trip.impl.TripLoader.scala</b>
+- Let Lagom know where the service loader is in trip-impl module:
+````
+mkdir -p src/main/resources
+touch src/main/resources/application.conf
+````
+- Update application.conf file
+````
+play.application.loader = com.github.janikibichi.learnakka.trip.impl.TripLoader
 
+````
+- Run all our services
+````
+sbt runAll
+````
+- Test the persistence:
+````
+curl http://127.0.0.1:9000/trip/end/0
 
+curl http://127.0.0.1:9000/trip/start/0
+
+curl -d '{"latitude":0.1, "longitude": 0.1}' http://127.0.0.1:9000/trip/report/0
+
+curl -d '{"latitude":0.2, "longitude": 0.2}' http://127.0.0.1:9000/trip/report/0
+
+curl -d '{"latitude":0.3, "longitude": 0.3}' http://127.0.0.1:9000/trip/report/0
+
+curl http://127.0.0.1:9000/trip/end/0
+````
+<br><br>
+- Branch out to explore akka in lagom
+````
+git checkout -b akka_in_lagom persistent_clustered_services
+````
 
 
 

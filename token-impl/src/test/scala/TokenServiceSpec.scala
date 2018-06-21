@@ -35,7 +35,7 @@ class TokenServiceSpec extends AsyncWordSpec with Matchers with BeforeAndAfterAl
         }
       }
     }
-    
+
   }
 
   override protected def beforeAll() = server
