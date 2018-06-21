@@ -356,6 +356,12 @@ mkdir -p src/main/resources
 touch src/main/resources/application.conf
 echo "play.application.loader = com.github.janikibichi.learnakka.akka.impl.CalculatorLoader" >> src/main/resources/application.conf
 ````
+- Test out the services:
+````
+curl http://127.0.0.1:9000/add/3/5
+
+curl http://127.0.0.1:9000/multiply/3/5
+````
 
 
 
