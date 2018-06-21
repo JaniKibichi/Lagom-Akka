@@ -293,6 +293,70 @@ curl http://127.0.0.1:9000/trip/end/0
 ````
 git checkout -b akka_in_lagom persistent_clustered_services
 ````
+- Define new modules in build.sbt
+````
+lazy val `akka-api`=(project in file("akka-api"))
+.settings(
+ libraryDependencies ++= Seq(
+  lagomScaladslApi
+ )
+)
+
+lazy val `akka-impl` = (project in file("akka-impl"))
+.settings(
+ libraryDependencies ++= Seq(
+  lagomScaladslPersistenceCassandra,
+  lagomScaladslTestKit,
+  macwire,
+  scalaTest
+ )
+)
+.settings(lagomForkedTestSettings: _*)
+.dependsOn(`akka-api`)
+````
+- Add the new modules to the aggregate of the project:
+````
+lazy val `lagomscala` = (project in file("."))
+  .aggregate(`lagomscala-api`, `lagomscala-impl`,`lagomscala-stream-api`, `lagomscala-stream-impl`,
+    `token-api`,`token-impl`,`consumer-api`,`consumer-impl`,`trip-api`,`trip-impl`,`akka-api`,`akka-impl`)
+
+````
+- Run sbt compile
+````
+sbt compile
+````
+- Create Package:
+````
+mkdir -p src/main/scala/com/github/janikibichi/learnakka/akka/api
+````
+- In the akka-api module, create file: CalculatorService.scala
+````
+com.github.janikibichi.learnakka.akka.api.CalculatorService.scala
+````
+- Create the implementation package in akka-impl
+````
+mkdir -p src/main/scala/com/github/janikibichi/learnakka/akka/impl
+````
+- In the akka-impl module, create file: CalculatorActor.scala
+````
+com.github.janikibichi.learnakka.akka.impl.CalculatorActor.scala
+````
+- Create the actual implementation:
+- In the akka-impl module, create file: CalculatorServiceImpl.scala
+````
+com.github.janikibichi.learnakka.akka.impl.CalculatorServiceImpl.scala
+````
+- Create the service loader file: CalculatorLoader.scala
+````
+com.github.janikibichi.learnakka.akka.impl.CalculatorLoader.scala
+````
+- Notify Lagom where the Loader is using application.conf
+````
+mkdir -p src/main/resources
+touch src/main/resources/application.conf
+echo "play.application.loader = com.github.janikibichi.learnakka.akka.impl.CalculatorLoader" >> src/main/resources/application.conf
+````
+
 
 
 
